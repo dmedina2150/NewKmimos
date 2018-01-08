@@ -6,15 +6,16 @@ class PayU {
 	protected $isTest = true; 
 
 	// -- PayU Configuracion
-	public function init( $ref='', $monto='', $moneda='COP' ){
+	public function init( $ref='', $monto='', $moneda='' ){
 
+		// SandBox: accountId [ Peru: 512323 || Colombia: 512321 ]
 		// -- Cargar Configuracion
 		$config = [
 			'sandbox' => [
 				'apiKey' => '4Vj8eK4rloUd272L48hsrarnUA',
 				'apiLogin' => 'pRRXKOl8ikMmt9u',
 				'merchantId' => '508029',
-				'accountId' => '512321',
+				'accountId' => '512323', 
 				'isTest' => 'false',
 				'confirmation' => get_home_url().'/cron/payu/request.php',
 				'PaymentsCustomUrl' => 'https://sandbox.api.payulatam.com/payments-api/4.0/service.cgi',
@@ -109,7 +110,7 @@ class PayU {
 		 
 		// -- Datos de Pagador 
 		$cofg["transaction"]["payer"]["merchantPayerId"] = $datos['cliente']['ID'];
-		$cofg["transaction"]["payer"]["fullName"] = $datos['cliente']['name'];
+		
 		$cofg["transaction"]["payer"]["emailAddress"] = $datos['cliente']['email'];
 		$cofg["transaction"]["payer"]["contactPhone"] = $datos['cliente']['telef'];
 		$cofg["transaction"]["payer"]["dniNumber"] = $datos['cliente']['dni'];
@@ -133,7 +134,7 @@ class PayU {
 		// -- Datos de Session y Configuracion
 		$cofg["transaction"]["extraParameters"]["INSTALLMENTS_NUMBER"] = "1";
 		$cofg["transaction"]["type"] = "AUTHORIZATION_AND_CAPTURE";
-		$cofg["transaction"]["paymentCountry"] = $datos['pais_cod_iso'];
+		$cofg["transaction"]["paymentCountry"] = $datos['pais'];
 		$cofg["transaction"]["deviceSessionId"] = $datos['PayuDeviceSessionId'];
 		$cofg["transaction"]["ipAddress"] = $_SERVER['REMOTE_ADDR'];
 		$cofg["transaction"]["cookie"] = $_COOKIE['PHPSESSID'];
@@ -144,7 +145,7 @@ class PayU {
 			$config['PaymentsCustomUrl'], 
 			json_encode($cofg, JSON_UNESCAPED_UNICODE)
 		);
-
+ 
 		return json_decode($r);
 	}
 
@@ -186,11 +187,12 @@ class PayU {
 		// -- Datos de Comprador
 		$cofg["transaction"]["order"]["buyer"]["fullName"] = $datos['cliente']['name'];
 		$cofg["transaction"]["order"]["buyer"]["emailAddress"] = $datos['cliente']['email'];
+		$cofg["transaction"]["payer"]["fullName"] = $datos['cliente']['name'];
 
 		// -- Datos de Session y Configuracion
 		$cofg["transaction"]["type"] = "AUTHORIZATION_AND_CAPTURE";
 		$cofg["transaction"]["ipAddress"] = $_SERVER['REMOTE_ADDR'];
-		$cofg["transaction"]["paymentCountry"] = $datos['pais_cod_iso'];
+		$cofg["transaction"]["paymentCountry"] = $datos['pais'];
 		$cofg["transaction"]["paymentMethod"] = $datos['paymentMethod'];
 		$cofg["transaction"]["expirationDate"] = $datos['expirationDate'];
 
@@ -200,6 +202,7 @@ class PayU {
 			$config['PaymentsCustomUrl'], 
 			json_encode($cofg, JSON_UNESCAPED_UNICODE)
 		);
+	
 		return json_decode($r);;
 	}
 
@@ -208,10 +211,32 @@ class PayU {
 		$config = $this->init();
 	}
 
+	public function getByOrderID( $order_id = '' ){
+		$config = $this->init();
+
+		$cofg = [];
+		// -- Datos del API
+		$cofg["test"] = $config['isTest'];
+		$cofg["language"] = "es";
+		$cofg["command"] = "ORDER_DETAIL";
+		$cofg["merchant"]["apiKey"] = $config['apiKey'];
+		$cofg["merchant"]["apiLogin"] = $config['apiLogin'];
+
+		$cofg["details"]["orderId"] = $order_id;
+
+		$r = $this->request( 
+			$config['ReportsCustomUrl'], 
+			json_encode($cofg, JSON_UNESCAPED_UNICODE)
+		);
+
+		return json_decode($r);
+	}
+
 	// -- Enviar solicitud
 	public function request( $url, $data ){
 
 		include(realpath( dirname(__DIR__)."/Requests/Requests.php" ));
+		
 		Requests::register_autoloader();
 		$headers = Array(
 			'Content-Type'=> 'application/json; charset=UTF-8',	

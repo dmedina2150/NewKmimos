@@ -55,8 +55,8 @@
     foreach ($data_reserva["variaciones"] as $value) {
         $variaciones .= '
             <div class="item">
-                <div>'.$value[0].' '.$value[1].' x '.$value[2].' x $'.$value[3].'</div>
-                <span>$'.$value[4].'</span>
+                <div>'.$value[0].' '.$value[1].' x '.$value[2].' x '.get_region('mon_der').' '.$value[3].'</div>
+                <span>'.get_region('mon_der').' '.$value[4].'</span>
             </div>
         ';
     }
@@ -83,8 +83,8 @@
         foreach ($data_reserva["adicionales"] as $value) {
             $adicionales .= '
                 <div class="item">
-                    <div>'.$value[0].' - '.$value[1].' x $'.$value[2].'</div>
-                    <span>$'.$value[3].'</span>
+                    <div>'.$value[0].' - '.$value[1].' x '.get_region('mon_der').' '.$value[2].'</div>
+                    <span>'.get_region('mon_der').' '.$value[3].'</span>
                 </div>
             ';
         }
@@ -102,7 +102,7 @@
             $transporte .= '
                 <div class="item">
                     <div>'.$value[0].'</div>
-                    <span>$'.$value[2].'</span>
+                    <span>'.get_region('mon_der').' '.$value[2].'</span>
                 </div>
             ';
         }
@@ -120,7 +120,7 @@
         $descuento = "
             <div class='item'>
                 <div>Descuento</div>
-                <span>".number_format( $data_reserva["descuento"], 2, ',', '.')."</span>
+                <span>".get_region('mon_der').' '.number_format( $data_reserva["descuento"], 2, ',', '.')."</span>
             </div>
         ";
     }
@@ -132,16 +132,16 @@
                 <strong>Totales</strong>
                 <div class='item'>
                     <div class='pago_en_efectivo'>Monto a pagar en EFECTIVO al cuidador</div>
-                    <span>".number_format( ($data_reserva["desglose"]["remaining"]-$data_reserva["descuento"]), 2, ',', '.')."</span>
+                    <span>".get_region('mon_der').' '.number_format( ($data_reserva["desglose"]["remaining"]-$data_reserva["descuento"]), 2, ',', '.')."</span>
                 </div>
                 <div class='item'>
                     <div>Pagado</div>
-                    <span>".number_format( $data_reserva["desglose"]["deposit"], 2, ',', '.')."</span>
+                    <span>".get_region('mon_der').' '.number_format( $data_reserva["desglose"]["deposit"], 2, ',', '.')."</span>
                 </div>
                 ".$descuento."
                 <div class='item total'>
                     <div>Total</div>
-                    <span>".number_format( $data_reserva["desglose"]["total"], 2, ',', '.')."</span>
+                    <span>".get_region('mon_der').' '.number_format( $data_reserva["desglose"]["total"], 2, ',', '.')."</span>
                 </div>
             </div>
         ";
@@ -152,12 +152,12 @@
                 <strong>Totales</strong>
                 <div class='item'>
                     <div>Pagado</div>
-                    <span>".number_format( $data_reserva["desglose"]["deposit"]-$data_reserva["descuento"], 2, ',', '.')."</span>
+                    <span>".get_region('mon_der').' '.number_format( $data_reserva["desglose"]["deposit"]-$data_reserva["descuento"], 2, ',', '.')."</span>
                 </div>
                 ".$descuento."
                 <div class='item total'>
                     <div>Total</div>
-                    <span>".number_format( $data_reserva["desglose"]["deposit"], 2, ',', '.')."</span>
+                    <span>".get_region('mon_der').' '.number_format( $data_reserva["desglose"]["deposit"], 2, ',', '.')."</span>
                 </div>
             </div>
         ";

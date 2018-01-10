@@ -40,7 +40,7 @@ function form_subscribe(element){
                 obj_submit.removeClass('disabled');
             }
             
-            if( data['message'] == "Ha sido Registrado" ){
+            if( data['result']===true ){
                
                 fbq ('track','CompleteRegistration');
                 fbq ('track','PopUpHome');

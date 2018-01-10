@@ -74,4 +74,3 @@ function getRazaDescripcion($id, $razas){
 	}
 	return $nombre;
 }
-

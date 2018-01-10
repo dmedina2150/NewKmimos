@@ -147,4 +147,4 @@ $users = getUsers($desde, $hasta);
   </div>
 </div>
 </div>
-<div class="clearfix"></div>
+<div class="clearfix"></div>	
